@@ -1,2 +1,1 @@
-# spread-of-airborne-diseases
-Predictive Analytics on Spread of Airborne Diseases
+# Predictive Analytics on Spread of Airborne Diseases
