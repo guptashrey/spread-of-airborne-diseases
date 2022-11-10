@@ -23,7 +23,6 @@ MONTHS = {
 
 # TODO List:
     # Add Comments and Function Comments
-    # Give Credit where it is due
  
 
 ##################################
@@ -31,6 +30,13 @@ MONTHS = {
 ##################################
 
 def download_google_mobility_data(output_folder=''):
+    """Downloads the google mobility data and saves it as a CSV.
+    data source: https://www.google.com/covid19/mobility/
+       
+    Args:
+        output_folder (str, optional): the folder where the data will be output. Defaults to ''.
+    """
+    
     # Get URL for the data
     url = 'https://www.gstatic.com/covid19/mobility/Region_Mobility_Report_CSVs.zip'
     
@@ -46,6 +52,16 @@ def download_google_mobility_data(output_folder=''):
 
                 
 def load_google_mobility_data(data_path=''):
+    """Loads the google mobility data into a dataframe and returns the dataframe. 
+    Any data that is missing a state or county is removed. 
+
+    Args:
+        data_path (str, optional): path to the folder containing the data. Defaults to ''.
+
+    Returns:
+        google_mobility_data (pd.DataFrame): The dataframe containing the google mobility data
+    """
+    
     # Combine all the data
     google_data = []
     for file in os.listdir(data_path):
@@ -93,60 +109,19 @@ def load_google_mobility_data(data_path=''):
 ###############
 # COUNTY DATA #
 ###############
-def download_daily_county_data(start_date, end_date, output_folder='data', output_filename='daily_county_data.csv', valid_fips=None):
-    # Track months to help user know where in download process they are
-    last_month = None
-    current_month = pd.to_datetime(start_date).month
-    
-    all_data = [] 
-    scale='county2county' # Download the county data
-    
-    # Loop through all the dates
-    for date in pd.date_range(start_date, end_date):
-        # Get the url of the data
-        day, month, year = str(date.day).zfill(2), str(date.month).zfill(2), str(date.year).zfill(4)
-        url=f"https://raw.githubusercontent.com/GeoDS/COVID19USFlows-DailyFlows/master/daily_flows/{scale}/daily_{scale}_{year}_{month}_{day}.csv"
-        
-        # Check when month changes for user's convenience
-        current_month = month
-        if(current_month != last_month):
-            last_month = current_month
-            print(f'Gathering Data for {MONTHS[month]} {year}')
-        
-        # Read the data
-        df = pd.read_csv(url)
-        df = df[(df['geoid_o'].isin(valid_fips)) | (df['geoid_d'].isin(valid_fips))]
-        
-        # Append the data to the list of daily data
-        all_data.append(df)
-        
-    
-    # Concatenate the data into a single dataframe
-    combined_df = pd.concat([data for data in all_data])
-    
-    # Save the current data as a CSV
-    combined_df.to_csv(os.path.join(output_folder, output_filename))
-    
-    
-def load_daily_county_data(file_path):
-    # Load all the data
-    geoDS_mobility_data = pd.read_csv(file_path)
-    geoDS_mobility_data = geoDS_mobility_data.iloc[:, 1:] # Drop the first column (the old index)
-    
-    # Ensure dataframes have same number and names of columns
-    if(geoDS_mobility_data.columns[-1] == 'date'):
-        # Combine the two date columns if they exist, since one is null
-        geoDS_mobility_data['date_range'] = geoDS_mobility_data['date_range'].fillna('') + geoDS_mobility_data['date'].fillna('')
-        geoDS_mobility_data = geoDS_mobility_data.iloc[:, :-1] # Drop the last column
-    
-    # Ensure all the date columns are called 'date' and not 'date_range'
-    geoDS_mobility_data = geoDS_mobility_data.rename(columns={'date_range':'date'})     
-        
-    # Return the dataframe
-    return geoDS_mobility_data
-
-
 def download_weekly_county_data(start_date, end_date, output_folder='data', output_filename='weekly_county_data.csv', valid_fips=None):
+    """Downloads geoDS mobility data from https://github.com/GeoDS/COVID19USFlows for every week between start_date and end_date. 
+    start_date and end_date must both be mondays. if valid_fips is passed, the data is filtered to only the observations 
+    where the fips code appears in either the origin or destination county.
+
+    Args:
+        start_date (string): string representing the first day to get data for. Must be a monday.
+        end_date (string): string representing the last day to get data for. Must be a monday.
+        output_folder (str, optional): Folder to output the data. Defaults to 'data'.
+        output_filename (str, optional): Name of the file to be output. This should include the file extension '.csv'. Defaults to 'weekly_county_data.csv'.
+        valid_fips (list, optional): A set of FIPS codes that the user wants to investigate. Defaults to None.
+    """
+    
     # Track months to help user know where in download process they are
     last_month = None
     current_month = pd.to_datetime(start_date).month
@@ -182,108 +157,17 @@ def download_weekly_county_data(start_date, end_date, output_folder='data', outp
     
 
 def load_weekly_county_data(file_path):
+    """Loads the weekly geoDS mobility data and returns it as a dataframe
+
+    Args:
+        file_path (str): path to the data
+
+    Returns:
+        geoDS_mobility_data (pd.DataFrame): dataframe containing the geoDS mobility data
+    """
     # Load the data
     geoDS_mobility_data = pd.read_csv(file_path)  
         
-    # Remove unnecessary columns
-    geoDS_mobility_data = geoDS_mobility_data.iloc[:, 1:-2]
-    
-    # Return the dataframe
-    return geoDS_mobility_data
-
-
-##############
-# State Data #
-##############
-
-def download_daily_state_data(start_date, end_date, output_folder='data', output_filename='daily_state_data.csv'):
-    # Track months to help user know where in download process they are
-    last_month = None
-    current_month = pd.to_datetime(start_date).month
-    
-    all_data = []
-    scale='state2state' # Download the state data
-    
-    # Loop through all the dates
-    for date in pd.date_range(start_date, end_date):
-        # Get the url of the data
-        day, month, year = str(date.day).zfill(2), str(date.month).zfill(2), str(date.year).zfill(4)
-        url=f"https://raw.githubusercontent.com/GeoDS/COVID19USFlows-DailyFlows/master/daily_flows/{scale}/daily_{scale}_{year}_{month}_{day}.csv"
-        
-        # Check when month changes for user's convenience
-        current_month = month
-        if(current_month != last_month):
-            last_month = current_month
-            print(f'Gathering Data for {MONTHS[month]} {year}')
-        
-        # Read the data
-        df = pd.read_csv(url)
-        
-        # Append the data to the list
-        all_data.append(df)
-        
-    
-    # Concatenate the data into a single dataframe
-    combined_df = pd.concat([data for data in all_data])
-    
-    # Save the current data as a CSV
-    combined_df.to_csv(os.path.join(output_folder, output_filename))
-    
-
-def load_daily_state_data(file_path):
-    geoDS_mobility_data = pd.read_csv(file_path)
-    geoDS_mobility_data = geoDS_mobility_data.iloc[:, 1:] # Drop the first column (the old index)
-    
-    # Ensure dataframes have same number and names of columns
-    if(geoDS_mobility_data.columns[-1] == 'date'):
-        # Combine the two date columns if they exist, since one is null
-        geoDS_mobility_data['date_range'] = geoDS_mobility_data['date_range'].fillna('') + geoDS_mobility_data['date'].fillna('')
-        geoDS_mobility_data = geoDS_mobility_data.iloc[:, :-1] # Drop the last column
-    
-    geoDS_mobility_data = geoDS_mobility_data.rename(columns={'date_range':'date'}) # Ensure all the date columns are called 'date' and not 'date_range'                
-        
-    # Return the dataframe
-    return geoDS_mobility_data
-
-
-def download_weekly_state_data(start_date, end_date, output_folder='data', output_filename='weekly_state_data.csv'):
-    # Track months to help user know where in download process they are
-    last_month = None
-    current_month = pd.to_datetime(start_date).month
-    
-    all_data = [] # Track the data for each week
-    scale='state2state' # Download the state data
-    
-    # Loop through all the dates
-    for date in pd.date_range(start_date, end_date, freq='7D'):
-        # Get the url of the data
-        day, month, year = str(date.day).zfill(2), str(date.month).zfill(2), str(date.year).zfill(4)
-        url=f"https://raw.githubusercontent.com/GeoDS/COVID19USFlows-WeeklyFlows/master/weekly_flows/{scale}/weekly_{scale}_{year}_{month}_{day}.csv"
-        
-        # Check when month changes for user's convenience
-        current_month = month
-        if(current_month != last_month):
-            last_month = current_month
-            print(f'Gathering Data for {MONTHS[month]} {year}')
-        
-        # Read the data
-        df = pd.read_csv(url)
-
-        # Append the data to the list
-        all_data.append(df)
-        
-    
-    # Concatenate the data into a single dataframe
-    combined_df = pd.concat([data for data in all_data])
-    
-    # Save the current data as a CSV
-    combined_df.to_csv(os.path.join(output_folder, output_filename))
-    
-    
-def load_weekly_state_data(file_path):
-    # Load the data
-    geoDS_mobility_data = pd.read_csv(file_path)  
-    
     # Remove unnecessary columns
     geoDS_mobility_data = geoDS_mobility_data.iloc[:, 1:-2]
     
@@ -296,6 +180,17 @@ def load_weekly_state_data(file_path):
 ##################
 
 def load_fips_codes(file_path):
+    """Loads data for the Fips codes of states and counties in the United States. 
+    A dataframe is created for both states and counties, containing the code and the state/county name.
+    
+
+    Args:
+        file_path (str): path to the data
+
+    Returns:
+        state_codes_df (pd.DataFrame): Dataframe containing a mapping of state FIPS codes.
+        county_codes_df (pd.DataFrame): Dataframe containing a mapping of county FIPS codes.
+    """
     # Get state codes
     state_codes_df = pd.read_csv(file_path, sep='\t', skiprows=15, nrows=50)
     state_codes_df[['code', 'state']] = state_codes_df.iloc[:,0].str.strip().str.split(' ', 1, expand=True)
