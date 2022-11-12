@@ -21,10 +21,6 @@ MONTHS = {
     '12':'December',
 }
 
-# TODO List:
-    # Add Comments and Function Comments
- 
-
 ##################################
 # Google Mobility Data Functions #
 ##################################
