@@ -130,3 +130,6 @@ dmypy.json
 
 # API key files
 *apikey.txt
+
+# SQL password
+sql_password.txt
