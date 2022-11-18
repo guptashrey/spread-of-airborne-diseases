@@ -1,0 +1,5 @@
+name: stats
+dependencies:
+  - matplotlib
+  - seaborn
+  - plotly
