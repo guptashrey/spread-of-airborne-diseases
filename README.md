@@ -11,5 +11,8 @@ Research has proven that mobility is one of the strongest indicators of how a di
 ### Data Processing
 
 ### Accessing the Data
+The processed data is stored in an Azure MySQL Database in the cloud. If you would like access to this Database, please email Shen Juin Lee at shenjuin.lee@duke.edu with your name and reason for accessing the data and we will be happy to provide access. 
+
+We have provided a sample of the processed data in this repository under the `data` folder to showcase the format and information contained within each dataset. Please refer to the cloud Database if you would like complete access. 
 
 ### Running the Code
