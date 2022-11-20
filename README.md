@@ -11,6 +11,15 @@ Research has proven that mobility is one of the strongest indicators of how a di
 We identified three key datasets that we believe will be beneficial in modeling and predicting the spread of Influenza: mobility data, weather data, and population data. We combined all this information together to predict our target variable, the number of Influenza cases for each New York County, for a given week. Specifically we use the features from 2 weeks beforehand to predict the number of cases in a given week. Find an in-depth description of each datset below:
 
 #### Mobility Data
+The mobility dataset used was collected from the [Google Mobility Report](https://www.google.com/covid19/mobility/).This data was originally collected for the purposes of COVID-19, but can be used to try and model the spread of different diseases around the same time. Data exists for every county in the U.S. for each day between 02/15/2019 and 10/15/2022. For the purposes of this project, we only use the data for New York counties. The data consists of the percent change in mobility for each of the following locations within a county.
+- Residential and Recreation Areas
+- Grocery Stores and Pharmacies
+- Parks
+- Transit Locations
+- Workplace
+- Reidential Locations
+
+This change is compared to a baseline which was collected in February 2019 right before this dataset was compiled. The percent change in mobility can be positive or negative. Any missing values are assumed to have no change and encoded as 0.
 #### Weather Data
 #### Population Data
 #### Influenza Data
