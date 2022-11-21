@@ -14,7 +14,10 @@ st.set_page_config(
     layout="wide")
 
 st.title("Spread of Influenza in New York")
-st.sidebar.success("Select a page above.")
+#st.sidebar.success("Select a page above.")
+st.sidebar.write("Influenza is the most common viral infection with virus strains mutating every season, effectively changing the severity of the infection. In rare but possible cases this could be deadly especially for the high-risk groups. Medical service providers can face situations where they have deployed more resources than necessary or they are entirely overwhelmed.")
+st.sidebar.write("The goal of this dashboard is to predict the number of cases based on passive contact tracing using mobility data, the weather conditions for a given season and the population demographics which record the highest incidences of the infection & those that face the highest burden of the disease.")
+st.sidebar.write("This will serve as a tool for the decision makers to promote relevant measures to curb infections in different regions through vaccination drives, masking advisories to the public, better crowd control, better resource management in terms of hospitalizations and better gauge of the possibility of the flu turning into an epidemic or a pandemic.")
 
 @st.cache
 def load_data():
@@ -30,12 +33,16 @@ with st.container():
 
 pop_df = pd.read_csv('./data/pop_preprocess.csv')
 
+row1_col1, row1_col2 = st.columns(2)
 
 ## Generate view metrics
-total_pop = pop_df.sum()["pop_est"]
-st.metric(label= "Population", value = total_pop)
-total_num_of_influenza_cases = df[df["Season"]==selected_season].Count.sum()
-st.metric(label= "Total Cases", value = total_num_of_influenza_cases)
+with row1_col1:
+    total_pop = pop_df.sum()["pop_est"]
+    st.metric(label= "Population", value = total_pop)
+
+with row1_col2:
+    total_num_of_influenza_cases = df[df["Season"]==selected_season].Count.sum()
+    st.metric(label= "Total Cases", value = total_num_of_influenza_cases)
 
 #######################
 with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json') as response:

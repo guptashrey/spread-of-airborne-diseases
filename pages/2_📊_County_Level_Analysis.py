@@ -63,18 +63,57 @@ matplotlib.use("agg")
 _lock = RendererAgg.lock
 sns.set_style("darkgrid")
 
-st.markdown("""---""")
-
 with st.container():
     selected_county = st.selectbox("Select a neighbourhood", COUNTIES).strip()
     county = str.upper(selected_county) + " COUNTY"
 
-#row1_col1, row1_col2 = st.columns(2)
+st.subheader("Population for different age buckets in a county")
+row1_col1, row1_col2, row1_col3, row1_col4 = st.columns(4)
+df = pd.read_csv('./data/y_var.csv')
+pop_df = pd.read_csv('./data/pop_preprocess.csv')
 
-#with row1_col1:
+
+## Generate view metrics
+with row1_col1:
+    st.markdown("Season 2019-2020")
+    total_pop = pop_df.sum()["pop_est"]
+    st.metric(label= "Population", value = total_pop)
+    total_num_of_influenza_cases = df[df["Season"]=="2019-2020"].Count.sum()
+    st.metric(label= "Total Cases", value = total_num_of_influenza_cases)
+
+with row1_col2:
+    st.markdown("Season 2020-2021")
+    total_pop = pop_df.sum()["pop_est"]
+    st.metric(label= "Population", value = total_pop)
+    total_num_of_influenza_cases = df[df["Season"]=="2019-2020"].Count.sum()
+    st.metric(label= "Total Cases", value = total_num_of_influenza_cases)
+
+with row1_col3:
+    st.markdown("Season 2021-2022")
+    total_pop = pop_df.sum()["pop_est"]
+    st.metric(label= "Population", value = total_pop)
+    total_num_of_influenza_cases = df[df["Season"]=="2019-2020"].Count.sum()
+    st.metric(label= "Total Cases", value = total_num_of_influenza_cases)
+
+with row1_col4:
+    st.markdown("Season 2022-2023")
+    total_pop = pop_df.sum()["pop_est"]
+    st.metric(label= "Population", value = total_pop)
+    total_num_of_influenza_cases = df[df["Season"]=="2019-2020"].Count.sum()
+    st.metric(label= "Total Cases", value = total_num_of_influenza_cases)
+
+st.caption("Influenza has higher incidence numbers in 0-4 yrs and 50-64 yrs buckets but 18-49 yrs bucket are the prime vectors. cases are high where the population number for 18-49 yrs is high.")
+
+st.markdown("""---""")
+
+st.subheader("Graph of temperature in comparison to the number of cases plotted against the date range")
 df_temp = df1[(df1['county'] == selected_county)]
 
 st.line_chart(data = df_temp, x = "datetime", y=["Count", "tempmax"])
+
+st.caption("weather conditions like high temperatures teamed with humidity are more conducive to influenza spread")
+
+st.subheader("Graph of mobility for 6 different reasons against the date range")
 
 google_mobility_data_NY_cleaned = pd.read_csv('./data/google_mobility_data.csv').iloc[:, 1:]
 google_mobility_data_NY_cleaned["county"] = [str.upper(i) for i in list(google_mobility_data_NY_cleaned["county"])]
@@ -86,6 +125,9 @@ else:
 feat_names = ["retail_and_recreation_percent_change","grocery_and_pharmacy_percent_change","parks_percent_change","transit_stations_percent_change","workplaces_percent_change","residential_percent_change"]
 st.line_chart(data = county_data, x = "date", y = feat_names)
 
+st.caption("influenza need vectors for the spread. Increase mobility in and out of infectious areas increases the number of vectors and infections")
+
+st.subheader("Correlation of count of cases with the weather conditions")
 fig = Figure()
 ax = fig.subplots()
 df_temp1 = df_temp[["humidity", "windspeed", "snow", "dew", "windgust", "tempmax", "feelslikemax", "severerisk", "feelslike", "temp", "feelslikemin", "tempmin", "Count"]]
@@ -93,43 +135,44 @@ corr_matrix = df_temp1.corr(method='pearson')
 sns.heatmap(corr_matrix, cmap='RdBu_r', square=True, ax=ax)
 st.write(fig)
 
+st.caption("The influenza cases increase with increased windspeeds as infectious droplets travel further.")
 
-# Add histogram data
-x1 = np.random.randn(200) - 2
-x2 = np.random.randn(200)
-x3 = np.random.randn(200) + 2
+# # Add histogram data
+# x1 = np.random.randn(200) - 2
+# x2 = np.random.randn(200)
+# x3 = np.random.randn(200) + 2
 
-# Group data together
-hist_data = [x1, x2, x3]
+# # Group data together
+# hist_data = [x1, x2, x3]
 
-group_labels = ['Group 1', 'Group 2', 'Group 3']
+# group_labels = ['Group 1', 'Group 2', 'Group 3']
 
-# Create distplot with custom bin_size
-fig = ff.create_distplot(
-        hist_data, group_labels, bin_size=[.1, .25, .5])
+# # Create distplot with custom bin_size
+# fig = ff.create_distplot(
+#         hist_data, group_labels, bin_size=[.1, .25, .5])
 
-# Plot!
-st.plotly_chart(fig, use_container_width=True)
+# # Plot!
+# st.plotly_chart(fig, use_container_width=True)
 
 
 
-with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json') as response:
-    counties = json.load(response)
+# with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json') as response:
+#     counties = json.load(response)
 
-df = pd.read_csv("https://raw.githubusercontent.com/plotly/datasets/master/fips-unemp-16.csv",
-                   dtype={"fips": str})
+# df = pd.read_csv("https://raw.githubusercontent.com/plotly/datasets/master/fips-unemp-16.csv",
+#                    dtype={"fips": str})
 
-df = df[(df["fips"].astype(int)>36000) & (df["fips"].astype(int)<37000)]
+# df = df[(df["fips"].astype(int)>36000) & (df["fips"].astype(int)<37000)]
 
-fig = px.choropleth(df, geojson=counties, locations='fips', color='unemp',
-                        color_continuous_scale="Reds",
-                        range_color=(0, 12),
-                        scope="usa",
-                        labels={'unemp':'unemployment rate'}
-                          )
-fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
-fig.update_geos(fitbounds="locations", visible=False)
-st.plotly_chart(fig)
+# fig = px.choropleth(df, geojson=counties, locations='fips', color='unemp',
+#                         color_continuous_scale="Reds",
+#                         range_color=(0, 12),
+#                         scope="usa",
+#                         labels={'unemp':'unemployment rate'}
+#                           )
+# fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+# fig.update_geos(fitbounds="locations", visible=False)
+# st.plotly_chart(fig)
 
 
 # col1, col2 = st.columns(2)

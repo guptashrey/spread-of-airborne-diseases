@@ -9,12 +9,16 @@ st.set_page_config(
     page_title="Future Forecast",
     page_icon="🔮")
 
+st.sidebar.write("This dashboard shows the number of cases predicted for the upcoming weeks. We also provide the accuracy percentage for each week’s predictions, so that the medical official can gauge the volume of resources to be deployed. For technical folks, we also provide residuals, which can be incorporated in their decision-making models for the capacity deployment decisions.")
+
 st.title("Future Forecast")
 COUNTIES = ['ALBANY', 'ALLEGANY', 'BRONX', 'BROOME', 'CATTARAUGUS', 'CAYUGA', 'CHAUTAUQUA', 'CHEMUNG', 'CHENANGO', 'CLINTON', 'COLUMBIA', 'CORTLAND', 'DELAWARE', 'DUTCHESS', 'ERIE', 'ESSEX', 'FRANKLIN', 'FULTON', 'GENESEE', 'GREENE', 'HAMILTON', 'HERKIMER', 'JEFFERSON', 'KINGS', 'LEWIS', 'LIVINGSTON', 'MADISON', 'MONROE', 'MONTGOMERY', 'NASSAU', 'NEW YORK', 'NIAGARA', 'ONEIDA', 'ONONDAGA', 'ONTARIO', 'ORANGE', 'ORLEANS', 'OSWEGO', 'OTSEGO', 'PUTNAM', 'QUEENS', 'RENSSELAER', 'RICHMOND', 'ROCKLAND', 'SARATOGA', 'SCHENECTADY', 'SCHOHARIE', 'SCHUYLER', 'SENECA', 'ST LAWRENCE', 'STEUBEN', 'SUFFOLK', 'SULLIVAN', 'TIOGA', 'TOMPKINS', 'ULSTER', 'WARREN', 'WASHINGTON', 'WAYNE', 'WESTCHESTER', 'WYOMING', 'YATES']
 COUNTIES = [i + " COUNTY" for i in COUNTIES]
 with st.container():
     county = st.selectbox("Select a county", COUNTIES).strip()
     #county = str.upper(county) + " COUNTY"
+
+st.subheader("Predicted case count for future weeks")
 
 df = pd.read_csv('./data/preds.csv')
 df["Forecast Date"] = pd.to_datetime(df["Forecast Date"])
