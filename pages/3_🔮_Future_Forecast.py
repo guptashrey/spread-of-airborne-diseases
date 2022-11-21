@@ -30,12 +30,13 @@ def run_ui():
 
     st.subheader("Predicted case count for future weeks")
 
-    fig = px.line(df, x="Forecast Date", y=["Actual Cases", "Predicted Cases"], markers=True)
+    df_selected = df[df["County"]==selected_county]
+    fig = px.line(df_selected, x="Forecast Date", y=["Actual Cases", "Predicted Cases"], markers=True)
     fig.update_xaxes(gridcolor = "#262730")
     fig.update_yaxes(gridcolor = "#262730")
     st.plotly_chart(fig, use_container_width=True)
 
-    df1 = df.copy()
+    df1 = df_selected.copy()
     df1=df1[["Forecast Date", "Forecasted On", "Actual Cases", "Predicted Cases", "Accuracy (%)"]]
     df1 = df1[~df1["Predicted Cases"].isna()].fillna("-")
     df1["Forecast Date"] = df1["Forecast Date"].astype(str)
@@ -45,7 +46,7 @@ def run_ui():
     df1.index = df1["Forecast Date"]
     df1.drop(columns=["Forecast Date"], inplace=True)
 
-    df2 = df.copy()
+    df2 = df_selected.copy()
     df2=df2[["Forecast Date", "Actual Cases", "Predicted Cases", "Residuals (W - 1)", "Residuals (W - 2)", "Residuals (W - 3)", "Residuals (W - 4)"]]
     df2 = df2[(~df2["Predicted Cases"].isna()) & (~df2["Actual Cases"].isna())].fillna("-")
     df2["Forecast Date"] = df2["Forecast Date"].astype(str)
