@@ -11,7 +11,7 @@ Research has proven that mobility is one of the strongest indicators of how a di
 We identified three key datasets that we believe will be beneficial in modeling and predicting the spread of Influenza: mobility data, weather data, and population data. We combined all this information together to predict our target variable, the number of Influenza cases for each New York County, for a given week. Specifically we use the features from 2 weeks beforehand to predict the number of cases in a given week. Find an in-depth description of each datset below:
 
 #### Mobility Data
-The mobility dataset used was collected from the [Google Mobility Report](https://www.google.com/covid19/mobility/).This data was originally collected for the purposes of COVID-19, but can be used to try and model the spread of different diseases around the same time. Data exists for every county in the U.S. for each day between 02/15/2019 and 10/15/2022. For the purposes of this project, we only use the data for New York counties. The data consists of the percent change in mobility for each of the following locations within a county.
+The mobility dataset used was collected from the [Google Mobility Report](https://www.google.com/covid19/mobility/). Google originally collected this data for the purposes of COVID-19, but it can be used to try and model the spread of different diseases around the same time. Data exists for every county in the U.S. for each day between 02/15/2019 and 10/15/2022. For the purposes of this project, we only use the data for New York counties. The data consists of the percent change in mobility for each of the following locations within a county.
 - Residential and Recreation Areas
 - Grocery Stores and Pharmacies
 - Parks
@@ -44,4 +44,4 @@ The processed data is stored in an Azure MySQL Database in the cloud. If you wou
 
 We have provided a sample of the processed data in this repository under the `data` folder to showcase the format and information contained within each dataset. Please refer to the cloud Database if you would like complete access. 
 
-### Running the Code - Results
+### How to Run the Code
