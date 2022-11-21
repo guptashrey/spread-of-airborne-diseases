@@ -33,12 +33,15 @@ Population data was also collected for every New York county from the [United St
 -	People 65+ years old
 
 #### Influenza Data
+The target data for this project is the number of Influenza cases in each New York county for a weekly basis. This data was gathered from the CDC through the [FluView API](https://cmu-delphi.github.io/delphi-epidata/api/fluview.html). Since we know Influenza tends to have an incubation period of ~2 days and is then contagious for another 3-4 days, analyzing the number of cases on a weekly basis makes more sense than doing it on a daily basis. One important note for this dataset is the CDC defines the "flu season" as October to May each year, which is when Influenza cases peak each year. For the purposes of this project, we are assuming there are no Influenza cases that occur outside the CDC-defined flu season. 
 
 ### Data Processing
+Since the Influenza Data is processed at a weekly level, we need to ensure all our features are measured at a weekly level as well. This means we need to aggregate our daily data to weekly data, and expland our yearly data to weekly data. For the mobility data, we decided the percent change in mobility for a given location during the week would be equal to the average daily mobility change throughout the week. The average was used for each of the six features described above. The weather data required a little more thought. Whether and average or total sum was used depends on the nature of the feature itself. For example,temperature is a clear example where using the average temperature over the week makes more intuitive sense than using the sum of temperatures throughout the week. However, other features such as the amount of precipitation are more ambiguos to which metric makes more sense. We decided that the week's total precipitation would be more useful than the daily average. Finally, for the population data we assumed it stayed constant throughout the year. All the weeks in 2019 have the same county populations, then all the weeks in 2020 have new county populations, and so on through 2021. 
+
 
 ### Accessing the Data
 The processed data is stored in an Azure MySQL Database in the cloud. If you would like access to this Database, please email Shen Juin Lee at shenjuin.lee@duke.edu with your name and reason for accessing the data and we will be happy to provide access. 
 
 We have provided a sample of the processed data in this repository under the `data` folder to showcase the format and information contained within each dataset. Please refer to the cloud Database if you would like complete access. 
 
-### Running the Code
+### Running the Code - Results
