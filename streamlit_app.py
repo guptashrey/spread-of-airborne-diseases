@@ -9,9 +9,9 @@ import json
 import plotly.express as px
 
 st.set_page_config(
-     page_title="Influenza Prediction",
-     page_icon="🌐",
-     layout="wide")
+    page_title="Influenza Prediction",
+    page_icon="🌐",
+    layout="wide")
 
 st.title("Spread of Influenza in New York")
 st.sidebar.success("Select a page above.")
