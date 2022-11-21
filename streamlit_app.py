@@ -1,32 +1,40 @@
+# library imports
 import streamlit as st
 import pandas as pd
-import matplotlib
-import seaborn as sns
-from matplotlib.backends.backend_agg import RendererAgg
-from matplotlib.figure import Figure
 from urllib.request import urlopen
 import json
 import plotly.express as px
+from sqlalchemy import create_engine
 
+# setting streamlit page configuration
 st.set_page_config(
     page_title="Influenza Prediction",
     page_icon="🌐",
     layout="wide")
 
+# setting page title
 st.title("Spread of Influenza in New York")
-#st.sidebar.success("Select a page above.")
+
+# adding text to sidebar
 st.sidebar.write("Influenza is the most common viral infection with virus strains mutating every season, effectively changing the severity of the infection. In rare but possible cases this could be deadly especially for the high-risk groups. Medical service providers can face situations where they have deployed more resources than necessary or they are entirely overwhelmed.")
 st.sidebar.write("The goal of this dashboard is to predict the number of cases based on passive contact tracing using mobility data, the weather conditions for a given season and the population demographics which record the highest incidences of the infection & those that face the highest burden of the disease.")
 st.sidebar.write("This will serve as a tool for the decision makers to promote relevant measures to curb infections in different regions through vaccination drives, masking advisories to the public, better crowd control, better resource management in terms of hospitalizations and better gauge of the possibility of the flu turning into an epidemic or a pandemic.")
 
-@st.cache
-def load_data():
-    """ Loads the required dataframe into the webapp """
-    print("[INFO] Data is loaded")
-    df = pd.read_csv('./data/y_var.csv')
-    return df
+# connection to mysql database
+db_config = json.load(open("db_config.json", "r"))
+db_conn_str = f'mysql+pymysql://{db_config["username"]}:{db_config["password"]}@{db_config["hostname"]}'
+sql_engine = create_engine(db_conn_str, connect_args={'ssl': {'enable_tls': True}})
+db_conn= sql_engine.connect()
 
-df = load_data()
+# @st.cache
+# def load_data():
+#     """ Loads the required dataframe into the webapp """
+#     print("[INFO] Data is loaded")
+#     df = pd.read_csv('./data/y_var.csv')
+#     return df
+
+influenza_data = pd.read_sql("SELECT * FROM influenza_data", db_conn)
+df = influenza_data.copy()
 INFLUENZA_SEASONS=['2019-2020', '2020-2021', '2021-2022', '2022-2023']
 with st.container():
     selected_season = st.selectbox("Select Influenza Season", INFLUENZA_SEASONS).strip()
