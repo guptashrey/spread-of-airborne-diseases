@@ -20,8 +20,13 @@ The mobility dataset used was collected from the [Google Mobility Report](https:
 - Reidential Locations
 
 This change is compared to a baseline which was collected in February 2019 right before this dataset was compiled. The percent change in mobility can be positive or negative. Any missing values are assumed to have no change and encoded as 0.
+
 #### Weather Data
+Weather data was collected using the [Visual Crossing API](https://www.visualcrossing.com/). It was collected for every county in New York on a daily basis between January 2020 and September 2022. It includes a large variety of features such as the min, max, and average temperature, the wind spped, and the type/amount of precipitation among most other common weather measures. 
+
 #### Population Data
+Population data was also collected for every New York county from the [United States Census Bureau](https://www2.census.gov/programs-surveys/). This data consists of a single population estimate for each county for each year from 2019 - 2021. Since population doesn't tend to fluctuate much in the short-term, we think a yearly sample is more than sufficient to model any substancial changes in county populations.
+
 #### Influenza Data
 
 ### Data Processing
