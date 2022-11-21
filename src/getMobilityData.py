@@ -1,3 +1,9 @@
+#################################################################################################################
+# The functions to gather the GeoDS mobility are derived from the scripts provided in the following repository. #
+# This GitHub repository also showcases where the data we are accessing is stored.                              #
+# https://github.com/GeoDS/COVID19USFlows#code-usage                                                            #
+#################################################################################################################
+
 # Imports
 import os
 import pandas as pd
