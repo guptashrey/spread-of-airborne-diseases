@@ -2,4 +2,5 @@ matplotlib
 seaborn
 plotly
 scipy
+pymysql
 sqlalchemy
