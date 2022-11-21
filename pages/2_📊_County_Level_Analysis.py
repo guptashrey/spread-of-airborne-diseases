@@ -1,280 +1,113 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import plotly.figure_factory as ff
 import seaborn as sns
-from matplotlib.backends.backend_agg import RendererAgg
 from matplotlib.figure import Figure
-import matplotlib
-from urllib.request import urlopen
 import json
-import plotly.express as px
+import matplotlib.pyplot as plt
+from sqlalchemy import create_engine
 
-st.set_page_config(
-    layout="wide",
-    page_title="County Level Analysis",
-    page_icon="📊")
+COUNTIES = ['ALBANY', 'ALLEGANY', 'BRONX', 'BROOME', 'CATTARAUGUS', 'CAYUGA', 'CHAUTAUQUA', 'CHEMUNG', 'CHENANGO', 'CLINTON', 'COLUMBIA', 'CORTLAND', 'DELAWARE', 'DUTCHESS', 'ERIE', 'ESSEX', 'FRANKLIN', 'FULTON', 'GENESEE', 'GREENE', 'HERKIMER', 'JEFFERSON', 'KINGS', 'LEWIS', 'LIVINGSTON', 'MADISON', 'MONROE', 'MONTGOMERY', 'NASSAU', 'NEW YORK', 'NIAGARA', 'ONEIDA', 'ONONDAGA', 'ONTARIO', 'ORANGE', 'ORLEANS', 'OSWEGO', 'OTSEGO', 'PUTNAM', 'QUEENS', 'RENSSELAER', 'RICHMOND', 'ROCKLAND', 'SARATOGA', 'SCHENECTADY', 'SCHOHARIE', 'SCHUYLER', 'SENECA', 'ST LAWRENCE', 'STEUBEN', 'SUFFOLK', 'SULLIVAN', 'TIOGA', 'TOMPKINS', 'ULSTER', 'WARREN', 'WASHINGTON', 'WAYNE', 'WESTCHESTER', 'WYOMING', 'YATES']
 
-COUNTIES = ['ALBANY', 'ALLEGANY', 'BRONX', 'BROOME', 'CATTARAUGUS', 'CAYUGA', 'CHAUTAUQUA', 'CHEMUNG', 'CHENANGO', 'CLINTON', 'COLUMBIA', 'CORTLAND', 'DELAWARE', 'DUTCHESS', 'ERIE', 'ESSEX', 'FRANKLIN', 'FULTON', 'GENESEE', 'GREENE', 'HAMILTON', 'HERKIMER', 'JEFFERSON', 'KINGS', 'LEWIS', 'LIVINGSTON', 'MADISON', 'MONROE', 'MONTGOMERY', 'NASSAU', 'NEW YORK', 'NIAGARA', 'ONEIDA', 'ONONDAGA', 'ONTARIO', 'ORANGE', 'ORLEANS', 'OSWEGO', 'OTSEGO', 'PUTNAM', 'QUEENS', 'RENSSELAER', 'RICHMOND', 'ROCKLAND', 'SARATOGA', 'SCHENECTADY', 'SCHOHARIE', 'SCHUYLER', 'SENECA', 'ST LAWRENCE', 'STEUBEN', 'SUFFOLK', 'SULLIVAN', 'TIOGA', 'TOMPKINS', 'ULSTER', 'WARREN', 'WASHINGTON', 'WAYNE', 'WESTCHESTER', 'WYOMING', 'YATES']
-st. title("County Analysis")
-
-#st.write('''### Overall Analysis Across Neighbourhoods''')
-
-@st.cache
 def load_data():
-    """ Loads the required dataframe into the webapp """
-    print("[INFO] Data is loaded")
-    df = pd.read_csv('./data/data_for_app.csv')
-    df1 = pd.read_csv('./data/temp.csv')
-    return df, df1
-
-df, df1 = load_data()
-
-## Generate view metrics
-# total_num_of_appointments = len(df)
-# num_of_neighbourhoods = df.neighbourhood.nunique()
-# avg_wait_peroid = round(df.days_between_appointment_and_scheduled_day.mean(),0)
-
-# count_shows = df["showed"].value_counts()[1]
-# count_no_shows = df["showed"].value_counts()[0]
-# showup_percent = round( (count_shows/total_num_of_appointments)*100, 1)
-# no_showup_percent = round( (count_no_shows/total_num_of_appointments)*100, 1)
-
-
-# data_to_plot = {
-#     "Neighbourhoods":str(num_of_neighbourhoods),
-#     "Avg Waiting Peroid":str(avg_wait_peroid) + " days",
-#     "Patient ShowUp %":str(showup_percent) + " %",
-#     "Patient No ShowUp %":str(no_showup_percent) + " %",
-# }
-
-# ## Add view cards for basic information around data
-# col1, col2, col3, col4 = st.columns(4)
-# columns = [col1, col2, col3, col4]
-
-# count = 0
-# for key, value in data_to_plot.items():
-#     with columns[count]:
-#         st.metric(label= key, value = value)
-#         count += 1
-
-matplotlib.use("agg")
-_lock = RendererAgg.lock
-sns.set_style("darkgrid")
-
-with st.container():
-    selected_county = st.selectbox("Select a neighbourhood", COUNTIES).strip()
-    county = str.upper(selected_county) + " COUNTY"
-
-st.subheader("Population for different age buckets in a county")
-row1_col1, row1_col2, row1_col3, row1_col4 = st.columns(4)
-df = pd.read_csv('./data/y_var.csv')
-pop_df = pd.read_csv('./data/pop_preprocess.csv')
-
-
-## Generate view metrics
-with row1_col1:
-    st.markdown("Season 2019-2020")
-    total_pop = pop_df.sum()["pop_est"]
-    st.metric(label= "Population", value = total_pop)
-    total_num_of_influenza_cases = df[df["Season"]=="2019-2020"].Count.sum()
-    st.metric(label= "Total Cases", value = total_num_of_influenza_cases)
-
-with row1_col2:
-    st.markdown("Season 2020-2021")
-    total_pop = pop_df.sum()["pop_est"]
-    st.metric(label= "Population", value = total_pop)
-    total_num_of_influenza_cases = df[df["Season"]=="2019-2020"].Count.sum()
-    st.metric(label= "Total Cases", value = total_num_of_influenza_cases)
-
-with row1_col3:
-    st.markdown("Season 2021-2022")
-    total_pop = pop_df.sum()["pop_est"]
-    st.metric(label= "Population", value = total_pop)
-    total_num_of_influenza_cases = df[df["Season"]=="2019-2020"].Count.sum()
-    st.metric(label= "Total Cases", value = total_num_of_influenza_cases)
-
-with row1_col4:
-    st.markdown("Season 2022-2023")
-    total_pop = pop_df.sum()["pop_est"]
-    st.metric(label= "Population", value = total_pop)
-    total_num_of_influenza_cases = df[df["Season"]=="2019-2020"].Count.sum()
-    st.metric(label= "Total Cases", value = total_num_of_influenza_cases)
-
-st.caption("Influenza has higher incidence numbers in 0-4 yrs and 50-64 yrs buckets but 18-49 yrs bucket are the prime vectors. cases are high where the population number for 18-49 yrs is high.")
-
-st.markdown("""---""")
-
-st.subheader("Graph of temperature in comparison to the number of cases plotted against the date range")
-df_temp = df1[(df1['county'] == selected_county)]
-
-st.line_chart(data = df_temp, x = "datetime", y=["Count", "tempmax"])
-
-st.caption("weather conditions like high temperatures teamed with humidity are more conducive to influenza spread")
-
-st.subheader("Graph of mobility for 6 different reasons against the date range")
-
-google_mobility_data_NY_cleaned = pd.read_csv('./data/google_mobility_data.csv').iloc[:, 1:]
-google_mobility_data_NY_cleaned["county"] = [str.upper(i) for i in list(google_mobility_data_NY_cleaned["county"])]
-if(google_mobility_data_NY_cleaned[google_mobility_data_NY_cleaned['county'] == county].shape[0] < len(google_mobility_data_NY_cleaned['date'].unique())):
-    county_data = google_mobility_data_NY_cleaned[google_mobility_data_NY_cleaned['county'] == county].merge(google_mobility_data_NY_cleaned[google_mobility_data_NY_cleaned['county'] == 'Albany County']['date'], how='right', on='date').ffill()
-else:
-    county_data = google_mobility_data_NY_cleaned[google_mobility_data_NY_cleaned['county'] == county]
-
-feat_names = ["retail_and_recreation_percent_change","grocery_and_pharmacy_percent_change","parks_percent_change","transit_stations_percent_change","workplaces_percent_change","residential_percent_change"]
-st.line_chart(data = county_data, x = "date", y = feat_names)
-
-st.caption("influenza need vectors for the spread. Increase mobility in and out of infectious areas increases the number of vectors and infections")
-
-st.subheader("Correlation of count of cases with the weather conditions")
-fig = Figure()
-ax = fig.subplots()
-df_temp1 = df_temp[["humidity", "windspeed", "snow", "dew", "windgust", "tempmax", "feelslikemax", "severerisk", "feelslike", "temp", "feelslikemin", "tempmin", "Count"]]
-corr_matrix = df_temp1.corr(method='pearson')
-sns.heatmap(corr_matrix, cmap='RdBu_r', square=True, ax=ax)
-st.write(fig)
-
-st.caption("The influenza cases increase with increased windspeeds as infectious droplets travel further.")
-
-# # Add histogram data
-# x1 = np.random.randn(200) - 2
-# x2 = np.random.randn(200)
-# x3 = np.random.randn(200) + 2
-
-# # Group data together
-# hist_data = [x1, x2, x3]
-
-# group_labels = ['Group 1', 'Group 2', 'Group 3']
-
-# # Create distplot with custom bin_size
-# fig = ff.create_distplot(
-#         hist_data, group_labels, bin_size=[.1, .25, .5])
-
-# # Plot!
-# st.plotly_chart(fig, use_container_width=True)
-
-
-
-# with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json') as response:
-#     counties = json.load(response)
-
-# df = pd.read_csv("https://raw.githubusercontent.com/plotly/datasets/master/fips-unemp-16.csv",
-#                    dtype={"fips": str})
-
-# df = df[(df["fips"].astype(int)>36000) & (df["fips"].astype(int)<37000)]
-
-# fig = px.choropleth(df, geojson=counties, locations='fips', color='unemp',
-#                         color_continuous_scale="Reds",
-#                         range_color=(0, 12),
-#                         scope="usa",
-#                         labels={'unemp':'unemployment rate'}
-#                           )
-# fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
-# fig.update_geos(fitbounds="locations", visible=False)
-# st.plotly_chart(fig)
-
-
-# col1, col2 = st.columns(2)
-
-# with col1, _lock:
-        
-    # ## Plot bar chart
-    # fig = Figure()
-    # ax = fig.subplots()
-    # df_temp = df1[(df1['county'] == selected_county) & ((df1['datetime'] >= '2020-09-01') & (df1['datetime'] <= '2021-12-31'))]
-    # df_temp = df1[["datetime", "Count", "tempmax"]]
-
-    # sns.lineplot(data=df_temp, ax=ax)
-
-    # st.pyplot(fig)
-
-
-
-# plt.plot(df_temp['datetime'], df_temp['Count'], color='red')
-# plt.plot(df_temp['datetime'], df_temp['tempmax'], color='blue')
-# plt.xticks(rotation=90)
-# plt.show()
-
-# ## Generate view metirc row 2
-# # Patients from selected nieghbourhood
-# df_filtered_neigh = df[df['neighbourhood'] == neighbourhood_selected].copy()
-# patients_from_neigh = len(df_filtered_neigh)
-
-# # Avg wait time for selcted neighbourhood
-# waitint_time_by_neighbourhood = df.groupby('neighbourhood').days_between_appointment_and_scheduled_day.mean()
-# avg_wait_selected_neigh = round(waitint_time_by_neighbourhood[neighbourhood_selected], 1)
-
-# count_shows = df_filtered_neigh["showed"].value_counts()[1]
-# count_no_shows = df_filtered_neigh["showed"].value_counts()[0]
-# showup_percent = round( (count_shows/patients_from_neigh)*100, 1)
-# no_showup_percent = round( (count_no_shows/patients_from_neigh)*100, 1)
-
-# data_to_plot_row2 = {
-#     "Avg Waiting time":str(avg_wait_selected_neigh) + " days",
-#     "Total Patients":str(patients_from_neigh),
-#     "Patient ShowUp %":str(showup_percent) + " %",
-#     "Patient No ShowUp %":str(no_showup_percent) + " %",
-# }
-
-## Add view cards for basic information around data
-# col1, col2, col3, col4 = st.columns(4)
-# columns = [col1, col2, col3, col4]
-
-# count = 0
-# for key, value in data_to_plot_row2.items():
-#     with columns[count]:
-#         st.metric(label= key, value = value)
-#         count += 1
-
-## Weather Analysis by Neighbourhood
-## Exploring effect of different weather parameters on patient show ups in each neighbourhood
-# weather_cols = ['humidity', 'feelslikemax', 'windspeed', 'solarradiation']
-# appointments_weather_df = df.groupby(['neighbourhood','showed'])[weather_cols].mean().reset_index()
-
-# patient_no_show_weather = appointments_weather_df[appointments_weather_df["neighbourhood"] == neighbourhood_selected]
-# patient_no_show_weather.showed = patient_no_show_weather.showed.astype("str")
-
-# col1, col2 = st.columns(2)
-# columns = [col1, col2]
-
-# count = 0
-# for i, col_name in enumerate(weather_cols):
-#     with columns[count]:
-        
-#         ## Plot bar chart
-#         fig = Figure()
-#         ax = fig.subplots()
-
-#         data_to_plot_weather = patient_no_show_weather.copy()[["showed", col_name]]
-
-#         sns.barplot(data=data_to_plot_weather, x="showed", y=col_name, ax=ax, width=0.5)
-
-#         ax.bar_label(ax.containers[0])
-#         st.pyplot(fig)
-
-#         count += 1
-#         if count >= 2:
-#             count = 0
-
-#         # axs[i, j].bar(patient_no_show_weather["showed"], patient_no_show_weather[columns[col_idx]], width = 0.25)
-#         # axs[i, j].set_ylabel(columns[col_idx])
-#         # axs[i, j].set_xticks([0, 1], ['No Show', 'Show'])
-
+    # connection to mysql database
+    db_config = json.load(open("db_config.json", "r"))
+    db_conn_str = f'mysql+pymysql://{db_config["username"]}:{db_config["password"]}@{db_config["hostname"]}'
+    sql_engine = create_engine(db_conn_str, connect_args={'ssl': {'enable_tls': True}})
+    db_conn= sql_engine.connect()
     
-# # with row_1_col1:
-# #     st.subheader("Average Waiting Time For Each Neighbourhood")
+    influenza_data = pd.read_sql("SELECT * FROM influenza_data", db_conn)
+    population_data = pd.read_sql("SELECT * FROM population", db_conn)
+    weather_data = pd.read_sql("SELECT * FROM weather", db_conn)
+    google_mobility_data = pd.read_sql("SELECT * FROM google_mobility", db_conn)
+    return influenza_data, population_data, weather_data, google_mobility_data
 
-# #     ## Avg waiting time for each neighbourhood
-# #     waitint_time_by_neighbourhood = df.groupby('neighbourhood').days_between_appointment_and_scheduled_day.mean()
+influenza_data, population_data, weather_data, google_mobility_data = load_data()
+population_data = population_data[population_data["YEAR"]==2021]
 
-# #     fig = Figure(figsize=(6, 18))
-# #     ax = fig.subplots()
+weather_data.drop(columns=["index"], inplace=True)
+weather_data.datetime = pd.to_datetime(weather_data.datetime)
+weather_data = weather_data[(weather_data["datetime"]>= "2020-02-15") & (weather_data["datetime"]<= "2022-10-29")]
+weather_data = pd.merge(weather_data, influenza_data[["Week Ending Date", "County", "Count"]], left_on=["datetime", "county"], right_on=["Week Ending Date", "County"], how="left").drop(columns=["Week Ending Date", "County"]).fillna(0)
 
-# #     data_to_plott_neighbourhood_avg = pd.DataFrame(waitint_time_by_neighbourhood).reset_index().rename(columns={"neighbourhood":"Neighbourhoods", "days_between_appointment_and_scheduled_day":"Avg Weight Time"})
-# #     data_to_plott_neighbourhood_avg["Avg Weight Time"] = round(data_to_plott_neighbourhood_avg["Avg Weight Time"], 1)
+google_mobility_data["county"] = [str.upper(i).replace(" COUNTY", "") for i in list(google_mobility_data["county"])]
 
-# #     sns.barplot(data=data_to_plott_neighbourhood_avg, x="Avg Weight Time", y="Neighbourhoods", ax=ax)
+# if(google_mobility_data[google_mobility_data['county'] == county].shape[0] < len(google_mobility_data['date'].unique())):
+#     county_data = google_mobility_data[google_mobility_data['county'] == county].merge(google_mobility_data[google_mobility_data['county'] == 'Albany County']['date'], how='right', on='date').ffill()
+# else:
+#     county_data = google_mobility_data[google_mobility_data['county'] == county]
+
+def run_ui():
+
+    # setting streamlit page configuration
+    st.set_page_config(
+        layout="wide",
+        page_title="County Level Analysis",
+        page_icon="📊")
     
-# #     ax.bar_label(ax.containers[0])
-# #     st.pyplot(fig)
+    # setting page title
+    st. title("County Analysis")
+    
+    # matplotlib.use("agg")
+    # _lock = RendererAgg.lock
+    # sns.set_style("darkgrid")
+    
+    # dropdown for selecting county
+    with st.container():
+        selected_county = st.selectbox("Select a county", COUNTIES).strip()
+
+    # adding population estimate and number of influenza cases metrics
+    st.subheader("Population for different age buckets in a county")
+    row1_col1, row1_col2, row1_col3, row1_col4 = st.columns(4)
+    
+    with row1_col1:
+        st.markdown("Season 2019-2020")
+        total_pop = population_data[population_data["CTYNAME"]==selected_county].sum()["POPESTIMATE"]
+        st.metric(label= "Population", value = total_pop)
+        total_num_of_influenza_cases = influenza_data[(influenza_data["Season"]=="2019-2020") & (influenza_data["County"]==selected_county)].Count.sum()
+        st.metric(label= "Total Cases", value = total_num_of_influenza_cases)
+
+    with row1_col2:
+        st.markdown("Season 2020-2021")
+        total_pop = population_data[population_data["CTYNAME"]==selected_county].sum()["POPESTIMATE"]
+        st.metric(label= "Population", value = total_pop)
+        total_num_of_influenza_cases = influenza_data[(influenza_data["Season"]=="2020-2021") & (influenza_data["County"]==selected_county)].Count.sum()
+        st.metric(label= "Total Cases", value = total_num_of_influenza_cases)
+
+    with row1_col3:
+        st.markdown("Season 2021-2022")
+        total_pop = population_data[population_data["CTYNAME"]==selected_county].sum()["POPESTIMATE"]
+        st.metric(label= "Population", value = total_pop)
+        total_num_of_influenza_cases = influenza_data[(influenza_data["Season"]=="2021-2022") & (influenza_data["County"]==selected_county)].Count.sum()
+        st.metric(label= "Total Cases", value = total_num_of_influenza_cases)
+
+    with row1_col4:
+        st.markdown("Season 2022-2023")
+        total_pop = population_data[population_data["CTYNAME"]==selected_county].sum()["POPESTIMATE"]
+        st.metric(label= "Population", value = total_pop)
+        total_num_of_influenza_cases = influenza_data[(influenza_data["Season"]=="2022-2023") & (influenza_data["County"]==selected_county)].Count.sum()
+        st.metric(label= "Total Cases", value = total_num_of_influenza_cases)
+
+    st.caption("Influenza has higher incidence numbers in 0-4 yrs and 50-64 yrs buckets but 18-49 yrs bucket are the prime vectors. cases are high where the population number for 18-49 yrs is high.")
+    st.markdown("""---""")
+
+    st.subheader("Graph of temperature in comparison to the number of cases plotted against the date range")
+    df_temp = weather_data[(weather_data['county'] == selected_county)]
+    st.line_chart(data = df_temp, x = "datetime", y=["Count", "tempmax"])
+    st.caption("weather conditions like high temperatures teamed with humidity are more conducive to influenza spread")
+
+    st.subheader("Graph of mobility for 6 different reasons against the date range")
+    feat_names = ["retail_and_recreation_percent_change","grocery_and_pharmacy_percent_change","parks_percent_change","transit_stations_percent_change","workplaces_percent_change","residential_percent_change"]
+    st.line_chart(data = google_mobility_data[google_mobility_data["county"]==selected_county], x = "date", y = feat_names)
+    st.caption("influenza need vectors for the spread. Increase mobility in and out of infectious areas increases the number of vectors and infections")
+
+    st.subheader("Correlation of count of cases with the weather conditions")
+    #fig = Figure()
+    fig, ax = plt.subplots(figsize=(5, 5))
+    df_temp = weather_data[["humidity", "windspeed", "snow", "dew", "windgust", "tempmax", "feelslikemax", "severerisk", "feelslike", "temp", "feelslikemin", "tempmin", "Count"]]
+    corr_matrix = df_temp.corr(method='pearson')
+    sns.heatmap(corr_matrix, cmap='RdBu_r', square=True, ax=ax)
+    st.pyplot(fig)
+    st.caption("The influenza cases increase with increased windspeeds as infectious droplets travel further.")
+
+if __name__ == '__main__':
+    run_ui()
