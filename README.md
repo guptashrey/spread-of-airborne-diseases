@@ -68,3 +68,6 @@ python -m ipykernel install --user --name=environ
 * Run the `xxxxx` to build different models like Random foreast, XgBoost, Logistic Regression and to check our data distribution using PCA. This file implements our primary approach to build a global model to predict patient no shows
 * Run the `xxxxx` to try out catboost modelling with neighbourhood feature included as a categorical variable
 * Run the `xxxxx` to build local models, one for each neighbourhood
+
+**7. Influenza Forecast Engine:**
+* Refer to the [README.md](https://github.com/guptashrey/spread-of-airborne-diseases/blob/st/README.md) at this link to run the streamlit based web application or access it [here](https://guptashrey-spread-of-airborne-diseases-streamlit-app-st-le86km.streamlit.app).
