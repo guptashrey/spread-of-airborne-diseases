@@ -1,6 +1,5 @@
-# Predictive Analytics on Spread of Airborne Diseases
-
-#### AIPI510 | **Bryce Whitney, Neha Barde, Shen Juin Lee, Shrey Gupta**
+## Predictive Analytics on Spread of Influenza
+**Bryce Whitney, Neha Barde, Shen Juin Lee, Shrey Gupta**
 
 ## Influenza Forecast Engine
 A streamlit based web application which gives you 4 week ahead forecast of influenza cases in the state of New York at a county level.
