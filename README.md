@@ -45,3 +45,26 @@ The processed data is stored in an Azure MySQL Database in the cloud. If you wou
 We have provided a sample of the processed data in this repository under the `data` folder to showcase the format and information contained within each dataset. Please refer to the cloud Database if you would like complete access. 
 
 ### How to Run the Code
+**1. Clone this repository**
+```
+git clone https://github.com/guptashrey/spread-of-airborne-diseases
+```
+**2. Create a conda environment:** 
+```
+conda create --name environ python=3.8
+```
+**3. Install requirements:** 
+```
+pip install -r requirements.txt
+```
+**4. Create a jupyter kernal from this environment:** 
+```
+python -m ipykernel install --user --name=environ
+```
+**5. Data Processing and EDA:**
+* Run the `xxxxx` file to plot a variety of charts and analytics we conducted on all the three data sources. This file processes all the three datasets, engineers new features, handles outliers and prepares the final data for modelling
+
+**6. Data Modelling:**
+* Run the `xxxxx` to build different models like Random foreast, XgBoost, Logistic Regression and to check our data distribution using PCA. This file implements our primary approach to build a global model to predict patient no shows
+* Run the `xxxxx` to try out catboost modelling with neighbourhood feature included as a categorical variable
+* Run the `xxxxx` to build local models, one for each neighbourhood
