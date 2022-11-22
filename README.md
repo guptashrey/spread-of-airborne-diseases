@@ -69,3 +69,4 @@ python -m ipykernel install --user --name=environ
 
 **7. Influenza Forecast Engine:**
 * Refer to the [README.md](https://github.com/guptashrey/spread-of-airborne-diseases/blob/st/README.md) at this link to run the streamlit based web application or access it [here](https://guptashrey-spread-of-airborne-diseases-streamlit-app-st-le86km.streamlit.app).
+* You can find the code for the stremalit web-app [here](https://github.com/guptashrey/spread-of-airborne-diseases/tree/st)
