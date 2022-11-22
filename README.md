@@ -36,11 +36,11 @@ Population data was also collected for every New York county from the [United St
 The target data for this project is the number of Influenza cases in each New York county for a weekly basis. This data was gathered from the CDC through the [FluView API](https://cmu-delphi.github.io/delphi-epidata/api/fluview.html). Since we know Influenza tends to have an incubation period of ~2 days and is then contagious for another 3-4 days, analyzing the number of cases on a weekly basis makes more sense than doing it on a daily basis. One important note for this dataset is the CDC defines the "flu season" as October to May each year, which is when Influenza cases peak each year. For the purposes of this project, we are assuming there are no Influenza cases that occur outside the CDC-defined flu season. 
 
 ### Data Processing
-Since the Influenza Data is processed at a weekly level, we need to ensure all our features are measured at a weekly level as well. This means we need to aggregate our daily data to weekly data, and expland our yearly data to weekly data. For the mobility data, we decided the percent change in mobility for a given location during the week would be equal to the average daily mobility change throughout the week. The average was used for each of the six features described above. The weather data required a little more thought. Whether and average or total sum was used depends on the nature of the feature itself. For example,temperature is a clear example where using the average temperature over the week makes more intuitive sense than using the sum of temperatures throughout the week. However, other features such as the amount of precipitation are more ambiguos to which metric makes more sense. We decided that the week's total precipitation would be more useful than the daily average. Finally, for the population data we assumed it stayed constant throughout the year. All the weeks in 2019 have the same county populations, then all the weeks in 2020 have new county populations, and so on through 2021. 
+Since the Influenza Data is processed at a weekly level, we need to ensure all our features are measured at a weekly level as well. This means we need to aggregate our daily data to weekly data, and expand our yearly data to weekly data. For the mobility data, we decided the percent change in mobility for a given location during the week would be equal to the average daily mobility change throughout the week. The average was used for each of the six features described above. The weather data required a little more thought. Whether the average or total sum was used depends on the nature of the feature itself. For example, temperature is a clear example where using the average temperature over the week makes more intuitive sense than using the sum of temperatures throughout the week. However, other features such as the amount of precipitation are more ambiguos to which metric makes more sense. We decided that the week's total precipitation would be more useful than the daily average. Finally, for the population data we assumed it stayed constant throughout the year. All the weeks in 2019 have the same county populations, then all the weeks in 2020 have new county populations, and so on through 2021. 
 
 
 ### Accessing the Data
-The processed data is stored in an Azure MySQL Database in the cloud. If you would like access to this Database, please email Shen Juin Lee at shenjuin.lee@duke.edu with your name and reason for accessing the data and we will be happy to provide access. 
+The processed data is stored in an Azure MySQL Database in the cloud. If you would like access to this Database, please email Shen Juin Lee at shenjuin.lee[AT]duke[DOT]edu with your name and reason for accessing the data and we will be happy to provide access. 
 
 We have provided a sample of the processed data in this repository under the `data` folder to showcase the format and information contained within each dataset. Please refer to the cloud Database if you would like complete access. 
 
@@ -61,13 +61,11 @@ pip install -r requirements.txt
 ```
 python -m ipykernel install --user --name=environ
 ```
-**5. Data Processing and EDA:**
-* Run the `xxxxx` file to plot a variety of charts and analytics we conducted on all the three data sources. This file processes all the three datasets, engineers new features, handles outliers and prepares the final data for modelling
+**5. Data Processing, EDA, and Modeling:**
+* Run the `src/modeling.ipynb` file to process all the three datasets, engineer new features, handle outliers and prepare the final data for modelling. In addition, four Random Forest models are trained for each county - one each for 1-week, 2-week, 3-week, and 4-week advance case count prediction. The models are timestamped and stored in the MySQL database. Feature-importance charts are also plotted for each of the four Random Forest models that are trained.
 
-**6. Data Modelling:**
-* Run the `xxxxx` to build different models like Random foreast, XgBoost, Logistic Regression and to check our data distribution using PCA. This file implements our primary approach to build a global model to predict patient no shows
-* Run the `xxxxx` to try out catboost modelling with neighbourhood feature included as a categorical variable
-* Run the `xxxxx` to build local models, one for each neighbourhood
+**6. Prediction Generation:**
+* Run the `src/prediction.ipynb` to load the models from the MySQL database and generate predictions for a specified timeframe. You will need to edit the first cell in the notebook to specify the beginning date of the predictions you wish to generate for.
 
 **7. Influenza Forecast Engine:**
 * Refer to the [README.md](https://github.com/guptashrey/spread-of-airborne-diseases/blob/st/README.md) at this link to run the streamlit based web application or access it [here](https://guptashrey-spread-of-airborne-diseases-streamlit-app-st-le86km.streamlit.app).
