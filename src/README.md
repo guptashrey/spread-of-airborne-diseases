@@ -1,7 +1,7 @@
 ## EDA
-`weather_eda.ipynb` performs exploratory data analysis of weather data in relation with the target variable - influenza case count. Several charts and visualizations are made in the notebook, including a heat map of features-vs-feature and feature-vs-target correlation matrix for one county, a line chart of temperature-vs-target for a county, and a bar chart showing the F-score of each weather feature ranked from highest to lowest.
+`DataAnalysis.ipynb` contains the data analysis for each of the datasets - mobility, weather, population, and Influenza data. The Influenza data is the target variable, so it is integrated throughout with the different features. Several charts and visualizations are made in the notebook, including a heat map of features-vs-feature and feature-vs-target correlation matrix for one county, a line chart of temperature-vs-target for a county, and a bar chart showing the F-score of each weather feature ranked from highest to lowest.
 
-`seasonal_decompose.ipynb` performs a seasonal decomposition of one county's case count over the entire timeline of the data. From the plot, we observe that there is annual seasonality for influenza cases, and the peaks occurs during the winter season of every year.
+`seasonal_decompose.ipynb` performs a seasonal decomposition of one county's case count over the entire timeline of the data. From the plot, we observe that there is annual seasonality for influenza cases, and the peaks occurs during the winter season of every year. This makes sense with the common knowledge geenrally associated with the flu. That is, it is most prevalent in the winter months. 
 
 ## Modeling
 
