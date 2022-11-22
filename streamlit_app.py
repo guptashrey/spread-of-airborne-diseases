@@ -8,8 +8,13 @@ from sqlalchemy import create_engine
 
 # global variables
 INFLUENZA_SEASONS=['2019-2020', '2020-2021', '2021-2022', '2022-2023']
+POPULATION_YEARS=[2018, 2019, 2020, 2021]
 
 def load_data():
+    '''
+    Makes connection to MYSQL database and loads the data
+    '''
+
     # connection to mysql database
     db_config = json.load(open("db_config.json", "r"))
     db_conn_str = f'mysql+pymysql://{db_config["username"]}:{db_config["password"]}@{db_config["hostname"]}'
@@ -18,12 +23,15 @@ def load_data():
 
     influenza_data = pd.read_sql("SELECT * FROM influenza_data", db_conn)
     population_data = pd.read_sql("SELECT * FROM population", db_conn)
+    db_conn.close()
+    
     return influenza_data, population_data
 
-influenza_data, population_data = load_data()
-population_data = population_data[population_data["YEAR"]==2021]
-
 def run_ui():
+    '''
+    Renders the Streamlit Page UI
+    '''
+    influenza_data, population_data = load_data()
 
     # setting streamlit page configuration
     st.set_page_config(
@@ -36,7 +44,6 @@ def run_ui():
 
     # adding text to sidebar
     st.sidebar.write("Influenza is the most common viral infection with virus strains mutating every season, effectively changing the severity of the infection. In rare but possible cases this could be deadly especially for the high-risk groups. Medical service providers can face situations where they have deployed more resources than necessary or they are entirely overwhelmed.")
-    st.sidebar.write("The goal of this dashboard is to predict the number of cases based on passive contact tracing using mobility data, the weather conditions for a given season and the population demographics which record the highest incidences of the infection & those that face the highest burden of the disease.")
     st.sidebar.write("This will serve as a tool for the decision makers to promote relevant measures to curb infections in different regions through vaccination drives, masking advisories to the public, better crowd control, better resource management in terms of hospitalizations and better gauge of the possibility of the flu turning into an epidemic or a pandemic.")
 
     # dropdown for selecting influenza season
@@ -46,6 +53,8 @@ def run_ui():
     # adding population estimate and number of influenza cases metrics
     row1_col1, row1_col2 = st.columns(2)
     with row1_col1:
+        pop_year = POPULATION_YEARS[INFLUENZA_SEASONS.index(selected_season)]
+        population_data = population_data[population_data["YEAR"]==pop_year]
         total_pop = population_data.sum()["POPESTIMATE"]
         st.metric(label= "Population", value = total_pop)
 
