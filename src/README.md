@@ -1,5 +1,5 @@
 ## EDA
-
+`weather_eda.ipynb` performs exploratory data analysis of weather data in relation with the target variable - influenza case count. Several charts and visualizations are made in the notebook, including a heat map of features-vs-feature and feature-vs-target correlation matrix for one county, a line chart of temperature-vs-target for a county, and a bar chart showing the F-score of each weather feature ranked from highest to lowest.
 
 ## Modeling
 
