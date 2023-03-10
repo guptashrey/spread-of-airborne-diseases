@@ -68,5 +68,5 @@ python -m ipykernel install --user --name=environ
 * Run the `src/prediction.ipynb` to load the models from the MySQL database and generate predictions for a specified timeframe. You will need to edit the first cell in the notebook to specify the beginning date of the predictions you wish to generate for.
 
 **7. Influenza Forecast Engine:**
-* Refer to the [README.md](https://github.com/guptashrey/spread-of-airborne-diseases/blob/st/README.md) at this link to run the streamlit based web application or access it [here](https://guptashrey-spread-of-airborne-diseases-streamlit-app-st-le86km.streamlit.app).
+* Refer to the [README.md](https://github.com/guptashrey/spread-of-airborne-diseases/blob/st/README.md) at this link to run the streamlit based web application or access it [here](https://influenza-spread.streamlit.app).
 * You can find the code for the stremalit web-app [here](https://github.com/guptashrey/spread-of-airborne-diseases/tree/st)
