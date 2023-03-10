@@ -17,7 +17,8 @@ def load_data():
     '''
 
     # connection to mysql database
-    db_config = json.load(open("db_config.json", "r"))
+    #db_config = json.load(open("db_config.json", "r"))
+    db_config = st.secrets.db_config
     db_conn_str = f'mysql+pymysql://{db_config["username"]}:{db_config["password"]}@{db_config["hostname"]}'
     sql_engine = create_engine(db_conn_str, connect_args={'ssl': {'enable_tls': True}})
     db_conn= sql_engine.connect()
